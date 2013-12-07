@@ -1,6 +1,6 @@
 {
   "name": "connect-saml2",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Authenticate users via SAML 2.0 in connect or express",
   "main": "index.js",
   "repository": {
