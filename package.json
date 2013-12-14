@@ -24,7 +24,7 @@
     "xpath": "0.0.5",
     "proquint-random-id": "0.0.1",
     "xml-c14n": "0.0.6",
-    "saml2": "0.0.7"
+    "saml2": "0.0.8"
   },
   "peerDependencies": {
     "connect": "2.x.x"
