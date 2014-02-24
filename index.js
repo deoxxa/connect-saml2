@@ -151,6 +151,7 @@ var connect_saml2 = module.exports = function connect_saml2(options) {
           sessionNotOnOrAfter = authnStatementElement.getAttribute("SessionNotOnOrAfter");
         }
 
+        req.samlAssertionXml = storedAssertionXml;
         req.samlAssertionDocument = storedAssertionDocument;
         req.samlAssertion = storedAssertion;
         req.user = new User({
@@ -173,6 +174,8 @@ var connect_saml2 = module.exports = function connect_saml2(options) {
         });
 
         if (sessionNotOnOrAfter && new Date(sessionNotOnOrAfter).valueOf() <= Date.now()) {
+          delete req.samlAssertionXml;
+          delete req.samlAssertionDocument;
           delete req.samlAssertion;
           delete req.user;
         }
