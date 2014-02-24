@@ -27,7 +27,7 @@ app.use(connect_saml2({
 }));
 
 app.use(function(req, res, next) {
-  return res.end(JSON.stringify(req.user));
+  return res.end(JSON.stringify(req.user, null, 2));
 });
 
 var server = http.createServer(app);
