@@ -39,6 +39,13 @@ var connect_saml2 = module.exports = function connect_saml2(options) {
     return cb();
   };
 
+  var afterAuthentication = options.afterAuthentication || function afterAuthentication(req, cb) {
+    req.session._saml = req.session._saml || {};
+    req.session._saml.fresh = true;
+
+    return cb();
+  };
+
   var fetchAssertionXml = options.fetchAssertionXml || function fetchAssertionXml(req, cb) {
     return cb(null, (req.session && req.session._saml && req.session._saml.assertionXml) || null);
   };
@@ -259,20 +266,12 @@ var connect_saml2 = module.exports = function connect_saml2(options) {
                   return next(err);
                 }
 
-                if (!req.body.RelayState) {
-                  res.writeHead(302, {
-                    location: "/",
-                  });
-
-                  return res.end();
-                }
-
-                return fetchRelayState(req, req.body.RelayState, function(err, relayState) {
+                return afterAuthentication(req, function(err) {
                   if (err) {
                     return next(err);
                   }
 
-                  if (typeof relayState !== "object" || relayState === null || !relayState.previousUrl) {
+                  if (!req.body.RelayState) {
                     res.writeHead(302, {
                       location: "/",
                     });
@@ -280,11 +279,25 @@ var connect_saml2 = module.exports = function connect_saml2(options) {
                     return res.end();
                   }
 
-                  res.writeHead(302, {
-                    location: relayState.previousUrl,
-                  });
+                  return fetchRelayState(req, req.body.RelayState, function(err, relayState) {
+                    if (err) {
+                      return next(err);
+                    }
 
-                  return res.end();
+                    if (typeof relayState !== "object" || relayState === null || !relayState.previousUrl) {
+                      res.writeHead(302, {
+                        location: "/",
+                      });
+
+                      return res.end();
+                    }
+
+                    res.writeHead(302, {
+                      location: relayState.previousUrl,
+                    });
+
+                    return res.end();
+                  });
                 });
               });
             });

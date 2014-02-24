@@ -245,6 +245,22 @@ function fetchRelayState(req, id, cb) {
 };
 ```
 
+### afterAuthentication
+
+* Type: `function(req, cb)`
+* Required: no
+* Default: (see below)
+
+```js
+// default function
+function afterAuthentication(req, cb) {
+  req.session._saml = req.session._saml || {};
+  req.session._saml.fresh = true;
+
+  return cb();
+};
+```
+
 License
 -------
 
