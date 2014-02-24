@@ -148,6 +148,7 @@ var connect_saml2 = module.exports = function connect_saml2(options) {
         req.samlAssertion = storedAssertion;
         req.user = new User({
           expiresAt: sessionNotOnOrAfter ? new Date(sessionNotOnOrAfter) : null,
+          id: xpath.select1("./*[namespace-uri()='urn:oasis:names:tc:SAML:2.0:assertion' and local-name()='Assertion']/*[namespace-uri()='urn:oasis:names:tc:SAML:2.0:assertion' and local-name()='Subject']/*[namespace-uri()='urn:oasis:names:tc:SAML:2.0:assertion' and local-name()='NameID']/text()", storedAssertionDocument) + "",
           attributes: xpath.select("./*[namespace-uri()='urn:oasis:names:tc:SAML:2.0:assertion' and local-name()='Assertion']/*[namespace-uri()='urn:oasis:names:tc:SAML:2.0:assertion' and local-name()='AttributeStatement']/*[namespace-uri()='urn:oasis:names:tc:SAML:2.0:assertion' and local-name()='Attribute']", storedAssertionDocument).map(function(attributeElement) {
             var attribute = saml2.Protocol.fromDocument(attributeElement);
 
